@@ -1,12 +1,11 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import logging
-from dialog import *
 
 app = Flask(__name__)
 SMARTHOMESERVER_ERROR = 202
 DEVICE_NOT_FOUND = 203
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://AliceSmartHub:qwerty123@AliceSmartHub.mysql.pythonanywhere-services.com/AliceSmartHub$smarthub'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'asjdbasidgausg7di73q783fad7fde'
 db = SQLAlchemy(app)
@@ -25,9 +24,3 @@ ENTER_SMARTHOME_PASSWORD = 2
 ENTER_NAME = 3
 
 
-status_handle = {
-    ENTER_SMARTHOME_WEBHOOK: new_user_start,
-    ENTER_SMARTHOME_PASSWORD: old_user_start,
-    MAIN_MENU: main_menu,
-    ENTER_NAME: enter_name
-}
