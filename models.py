@@ -1,30 +1,26 @@
 from app import db
 
 
-class User(db.Model):
-
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.String(100), unique=True)
-    name = db.Column(db.String(100), unique=True)
-
-
-class SmartHome(db.Model):
-
-    id = db.Column(db.Integer, primary_key=True)
-    webhook_url = db.Column(db.String(100))
-    password = db.Column(db.String(100))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship('User', backref=db.backref('smarthomes', lazy=True))
-
-
 class Device(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    system_id = db.Column(db.Integer, primary_key=True)
-    user_name = db.Column(db.String(100))
-    type = db.Column(db.Integer)
-    smarthome_id = db.Column(db.ForeignKey('smart_home.id'))
-    smarthome = db.relationship('SmartHome', backref=db.backref('devices', lazy=True))
+    type = db.Column(db.String(100))
 
 
-db.create_all()
+class Pin(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    signature = db.Column(db.Integer)
+    device_id = db.Column(db.Integer, db.ForeignKey('device.id'))
+    device = db.relationship('Device', backref=db.backref('pins', lazy=True))
+
+
+# db.create_all()
+# dev = Device(type=0)
+# db.session.add(dev)
+# db.session.commit()
+# dev = Device.query.filter_by(type=0).first()
+# for i in range(1, 14):
+#     pin = Pin(signature=i, device=dev)
+#     db.session.add(pin)
+#     db.session.commit()
