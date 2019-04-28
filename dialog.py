@@ -10,6 +10,8 @@ def set_status(session_id, status):
 
 def old_user_start(**kwargs):
     response = kwargs['response']
+    user = get_current_user(kwargs['request'])
+    response['response']['text'] = 'Добро пожаловать обратно, {}!'.format(user.name)
     set_main_menu_gui(response)
     logging.info('User logged in<br>')
 
