@@ -1,4 +1,4 @@
-from app import sessionStorage, ENTER_SMARTHOME_WEBHOOK, ENTER_SMARTHOME_PASSWORD, MAIN_MENU, ENTER_NAME
+from app import sessionStorage, ENTER_SMARTHOME_WEBHOOK, ENTER_SMARTHOME_PASSWORD, MAIN_MENU, ENTER_NAME, ENTER_DEVICE_ID, ENTER_DEVICE_NAME
 from Integration import *
 import logging
 from extra import *
@@ -70,7 +70,39 @@ def main_menu(**kwargs):
         else:
             response['response']['text'] = 'Я вас не поняла'
     else:
-        response['response']['text'] = 'Эти функции пока не работают'
+        if req_text == 'добавить устройство':
+            set_status(kwargs['request']['session']['session_id'], ENTER_DEVICE_ID)
+            response['response']['text'] = 'Введите номер модуля'
+        else:
+            response['response']['text'] = 'Эти функции пока не работают'
+    set_main_menu_gui(response)
+
+
+def enter_device_id(**kwargs):
+    response = kwargs['response']
+    number = kwargs['request']['request']['original_utterance']
+    user = get_current_user(kwargs['request'])
+    smarthome = user.smarthomes[0]
+    session_id = kwargs['request']['request']['session']['session_id']
+    if is_device(smarthome.webhook_url, smarthome.password, number):
+        sessionStorage[session_id]['code'] = number
+        response['response']['text'] = 'Назовите это устройство'
+        set_status(session_id, ENTER_DEVICE_NAME)
+    else:
+        response['response']['text'] = 'Такого устройства на сервере нет'
+
+
+def enter_device_name(**kwargs):
+    response = kwargs['response']
+    name = kwargs['request']['request']['original_utterance']
+    user = get_current_user(kwargs['request'])
+    smarthome = user.smarthomes[0]
+    session_id = kwargs['request']['request']['session']['session_id']
+    dev = Device(system_id=sessionStorage[session_id]['code'], user_name=name, type=1, smarthome=smarthome)
+    db.session.add(dev)
+    db.session.commit()
+    response['response']['text'] = 'Устройство успешно добавлено'
+    set_status(session_id, MAIN_MENU)
     set_main_menu_gui(response)
 
 
@@ -135,7 +167,9 @@ status_handle = {
     ENTER_SMARTHOME_WEBHOOK: enter_smarthome_webhook,
     ENTER_SMARTHOME_PASSWORD: enter_smarthome_password,
     MAIN_MENU: main_menu,
-    ENTER_NAME: enter_name
+    ENTER_NAME: enter_name,
+    ENTER_DEVICE_ID: enter_device_id,
+    ENTER_DEVICE_NAME: enter_device_name
 }
 
 main_menu_functions = [

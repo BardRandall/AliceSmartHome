@@ -34,3 +34,14 @@ def function(webhook_url, webhook_password, device_id, action):
     except Exception:
         logging.debug('Connection refused')
         return SMARTHOMESERVER_ERROR
+
+
+def is_device(webhook_url, webhook_password, device_id):
+    try:
+        r = requests.get(
+            webhook_url + '/is-device', params={'password': webhook_password, 'device_id': device_id}
+        ).json()
+        return r['ok']
+    except Exception:
+        logging.debug('Connection refused')
+        return SMARTHOMESERVER_ERROR
