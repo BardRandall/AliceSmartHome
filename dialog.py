@@ -1,4 +1,4 @@
-from app import db, sessionStorage, ENTER_SMARTHOME_WEBHOOK, ENTER_SMARTHOME_PASSWORD, MAIN_MENU, ENTER_NAME
+from app import sessionStorage, ENTER_SMARTHOME_WEBHOOK, ENTER_SMARTHOME_PASSWORD, MAIN_MENU, ENTER_NAME
 from Integration import *
 import logging
 from extra import *
@@ -41,9 +41,34 @@ def unexpected_error(**kwargs):
 
 def main_menu(**kwargs):
     response = kwargs['response']
-    response['response']['text'] = 'Main menu'
-    response['response']['end_session'] = True
-    logging.warning('Not found user session<br>')
+    req_text = kwargs['request']['request']['original_utterance'].lower()
+    req_data = req_text.split()
+    user = get_current_user(kwargs['request'])
+    smarthome = user.smarthomes[0]
+    if req_text not in [x.lower() for x in main_menu_functions]:
+        if req_data[0] == 'включить' or req_data[0] == 'включи':
+            dev = Device.query.filter_by(smarthome=smarthome, user_name=' '.join(req_data[1:])).first()
+            if dev is None:
+                response['response']['text'] = 'У вас нет такого устройства'
+            else:
+                if function(smarthome.webhook_url, smarthome.webhook_password, dev.system_id, 1) == SMARTHOMESERVER_ERROR:
+                    response['response']['text'] = 'Что-то пошло не так'
+                else:
+                    response['response']['text'] = 'Сделано!'
+        elif req_data[0] == 'выключить' or req_data[0] == 'выключи':
+            dev = Device.query.filter_by(smarthome=smarthome, user_name=' '.join(req_data[1:])).first()
+            if dev is None:
+                response['response']['text'] = 'У вас нет такого устройства'
+            else:
+                if function(smarthome.webhook_url, smarthome.webhook_password, dev.system_id, 0) == SMARTHOMESERVER_ERROR:
+                    response['response']['text'] = 'Что-то пошло не так'
+                else:
+                    response['response']['text'] = 'Сделано!'
+        else:
+            response['response']['text'] = 'Я вас не поняла'
+    else:
+        response['text'] = 'Эти функции пока не работают'
+    set_main_menu_gui(response)
 
 
 def enter_name(**kwargs):
@@ -74,7 +99,16 @@ def enter_smarthome_webhook(**kwargs):
 
 
 def set_main_menu_gui(response):
-    response['response']['text'] = 'Главное меню'
+    response['response']['buttons'] = [
+        {
+            "title": "Добавить устройство",
+            "hide": True
+        },
+        {
+            "title": "Выйти",
+            "hide": True
+        }
+    ]
 
 
 def enter_smarthome_password(**kwargs):
@@ -100,3 +134,8 @@ status_handle = {
     MAIN_MENU: main_menu,
     ENTER_NAME: enter_name
 }
+
+main_menu_functions = [
+    'Добавить устройство',
+    'Выйти'
+]

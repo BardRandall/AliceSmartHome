@@ -19,6 +19,10 @@ def is_device_exists(name, user_id):
     return device
 
 
+def get_current_user(request):
+    return User.query.filter_by(user_id=request['session']['user_id']).first()
+
+
 def get_first_name(req):
     # перебираем сущности
     for entity in req['request']['nlu']['entities']:
