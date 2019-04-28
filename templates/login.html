@@ -28,8 +28,13 @@
                 <h3>Вход в панель управления</h3>
                 <form action="#" method="post">
                     <div class="form-group">
+                        {% if not success %}
+                            <div class="alert alert-danger" role="alert">
+                              Неверный пароль
+                            </div>
+                        {% endif %}
                         <label for="exampleInputPassword1">Введите пароль</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Пароль от сервера">
+                        <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Пароль от сервера">
                     </div>
                     <button type="submit" class="btn btn-primary">Войти</button>
                 </form>

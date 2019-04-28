@@ -1,6 +1,7 @@
-{
-  "no_device": {
+[
+  {
     "russian_name": "без устройства",
+    "id": 0,
     "pins_count": 1,
     "pins": [
       {
@@ -10,8 +11,9 @@
       }
     ]
   },
-  "led": {
+  {
     "russian_name": "светодиод",
+    "id": 1,
     "pins_count": 1,
     "pins": [
       {
@@ -21,8 +23,9 @@
       }
     ]
   },
-  "temperature": {
+  {
     "russian_name": "датчик температуры",
+    "id": 2,
     "pins_count": 1,
     "pins": [
       {
@@ -32,4 +35,4 @@
       }
     ]
   }
-}
+]

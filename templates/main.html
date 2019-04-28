@@ -21,7 +21,7 @@
         <div class="col-md-8 offset-md-2">
             <h3>Панель управления устройствами</h3>
             <p>
-                <a class="btn btn-success" href="#">Добавить устройство</a>
+                <a class="btn btn-success" href="{{ url_for('add_device') }}">Добавить устройство</a>
             </p>
             <table class="table">
                 <thead>
@@ -33,30 +33,16 @@
                 </tr>
                 </thead>
                 <tbody>
+                {% for device in devices %}
                 <tr>
-                    <th scope="row">1</th>
-                    <td>светодиод</td>
-                    <td>4</td>
+                    <th scope="row">{{ device.id }}</th>
+                    <td>{{ config[device.type]['russian_name'] }}</td>
+                    <td>Загрузка...</td>
                     <td>
-                        <a class="btn btn-danger" href="#">Удалить</a>
+                        <a class="btn btn-danger" href="{{ url_for('delete_device', id=device.id) }}">Удалить</a>
                     </td>
                 </tr>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>светодиод</td>
-                    <td>4</td>
-                    <td>
-                        <a class="btn btn-danger" href="#">Удалить</a>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>светодиод</td>
-                    <td>4</td>
-                    <td>
-                        <a class="btn btn-danger" href="#">Удалить</a>
-                    </td>
-                </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>

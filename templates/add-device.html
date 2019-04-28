@@ -20,17 +20,25 @@
     <div class="row">
         <div class="col-md-6 offset-md-3">
             <h3>Добавление устройства</h3>
+            {% if no_pin %}
+                <div class="alert alert-danger" role="alert">
+                  Этот пин уже занят
+                </div>
+            {% endif %}
             <form action="#" method="post">
                 <div class="form-group">
                     <label for="exampleFormControlSelect1">Выберите тип устройства</label>
-                    <select class="form-control" id="exampleFormControlSelect1">
-                        <option>Светодиод</option>
-                        <option>Датчик температуры</option>
+                    <select class="form-control" name="type" id="exampleFormControlSelect1">
+                        {% for device in config %}
+                            {% if device['id'] != 0 %}
+                                <option value="{{ device.id }}">{{ device.russian_name }}</option>
+                            {% endif %}
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="exampleFormControlSelect2">Выберите пин</label>
-                    <select class="form-control" id="exampleFormControlSelect2">
+                    <select class="form-control" name="pin" id="exampleFormControlSelect2">
                         <option>1</option>
                         <option>2</option>
                         <option>3</option>
