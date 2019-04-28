@@ -27,12 +27,20 @@ def iswebhook():
 
 @app.route('/action')
 def action():
-    password = request.args['password']
-    type = int(request.args['type'])
-    device_id = int(request.args['device_id'])
-    with open('password.txt') as f:
-        data = f.read().rstrip()
-    if data != password:
+    try:
+        password = request.args['password']
+        type = int(request.args['type'])
+        device_id = int(request.args['device_id'])
+        with open('password.txt') as f:
+            data = f.read().rstrip()
+        if data != password:
+            return generate_answer({'ok': False})
+        device = Device.query.filter_by(id=device_id).first()
+        if type == 1:
+            turn_on(0, 0, device.pins[0].signature)
+        else:
+            turn_off(0, 0, device.pins[0].signature)
+    except Exception:
         return generate_answer({'ok': False})
 
 
