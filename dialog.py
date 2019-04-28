@@ -70,7 +70,7 @@ def main_menu(**kwargs):
         else:
             response['response']['text'] = 'Я вас не поняла'
     else:
-        response['text'] = 'Эти функции пока не работают'
+        response['response']['text'] = 'Эти функции пока не работают'
     set_main_menu_gui(response)
 
 
